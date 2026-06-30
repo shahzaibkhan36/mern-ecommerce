@@ -1,0 +1,9 @@
+{
+  "short_name": "ShopNest",
+  "name": "ShopNest - E-commerce Store",
+  "icons": [],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#6C63FF",
+  "background_color": "#F8FAFC"
+}
