@@ -13,9 +13,9 @@ export default function Footer() {
           </div>
           <p>Curated goods, fair prices, and fast delivery — everything you need, all in one place.</p>
           <div className="social-links">
-            <a href="#" aria-label="Facebook">📘</a>
-            <a href="#" aria-label="Instagram">📷</a>
-            <a href="#" aria-label="Twitter">🐦</a>
+            <a href="/" aria-label="Facebook">📘</a>
+            <a href="/" aria-label="Instagram">📷</a>
+            <a href="/" aria-label="Twitter">🐦</a>
           </div>
         </div>
 
