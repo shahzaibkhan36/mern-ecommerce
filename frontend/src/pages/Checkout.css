@@ -30,6 +30,102 @@
 .summary-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 0.9rem; color: var(--text-muted); }
 .summary-row.total { border-top: 1px solid var(--border); margin-top: 6px; padding-top: 14px; font-weight: 700; font-size: 1.1rem; color: var(--dark); }
 
+/* ── Payment Method Selector ── */
+.payment-method-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.payment-option {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: var(--transition);
+  background: white;
+}
+
+.payment-option:hover {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+
+.payment-option.active {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+
+.payment-option-radio {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.radio-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--primary);
+}
+
+.payment-option-icon {
+  font-size: 1.4rem;
+}
+
+.payment-option strong {
+  display: block;
+  font-size: 0.95rem;
+  color: var(--dark);
+  margin-bottom: 2px;
+}
+
+.payment-option p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* ── Cash on Delivery Notice ── */
+.cod-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: #FFF8E1;
+  border: 1.5px solid #F59E0B;
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.cod-notice span {
+  font-size: 1.6rem;
+  flex-shrink: 0;
+}
+
+.cod-notice strong {
+  display: block;
+  color: var(--dark);
+  margin-bottom: 4px;
+  font-size: 0.95rem;
+}
+
+.cod-notice p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
 @media (max-width: 900px) {
   .checkout-layout { grid-template-columns: 1fr; }
   .form-row { grid-template-columns: 1fr; }

@@ -9,7 +9,8 @@ exports.createOrder = async (req, res) => {
     const order = await Order.create({
       user: req.user._id, items, shippingAddress,
       paymentMethod, subtotal, shippingCost, tax, total,
-      paymentStatus: 'paid', orderStatus: 'confirmed'
+      paymentStatus: paymentMethod === 'COD' ? 'pending' : 'paid',
+      orderStatus: 'confirmed'
     });
 
     // Update stock

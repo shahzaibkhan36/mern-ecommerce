@@ -12,6 +12,7 @@ export default function Checkout() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState('Card');
   const [shipping, setShipping] = useState({
     fullName: user?.name || '', street: '', city: '', state: '', zip: '', country: ''
   });
@@ -29,7 +30,7 @@ export default function Checkout() {
         product: i._id, name: i.name, image: i.images[0], price: i.price, quantity: i.quantity
       }));
       const { data } = await axios.post('/api/orders', {
-        items, shippingAddress: shipping, paymentMethod: 'Card',
+        items, shippingAddress: shipping, paymentMethod,
         subtotal: cartTotal, shippingCost, tax, total
       });
       clearCart();
@@ -58,6 +59,8 @@ export default function Checkout() {
 
       <div className="checkout-layout">
         <div className="checkout-form-area">
+
+          {/* STEP 1: Shipping */}
           {step === 1 && (
             <form onSubmit={(e) => { e.preventDefault(); setStep(2); }} className="checkout-form">
               <h3>Shipping Address</h3>
@@ -99,87 +102,83 @@ export default function Checkout() {
             </form>
           )}
 
+          {/* STEP 2: Payment */}
           {step === 2 && (
             <form onSubmit={(e) => { e.preventDefault(); setStep(3); }} className="checkout-form">
-              <h3>Payment Details</h3>
-              <p className="payment-note">🔒 This is a demo checkout — no real payment will be processed.</p>
-              <div className="form-group">
-                <label className="form-label">Cardholder Name</label>
-                <input className="form-input" required value={payment.cardName}
-                  onChange={(e) => setPayment({ ...payment, cardName: e.target.value })} />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Card Number</label>
-                <input className="form-input" required placeholder="4242 4242 4242 4242" maxLength={19} value={payment.cardNumber}
-                  onChange={(e) => setPayment({ ...payment, cardNumber: e.target.value })} />
-              </div>
-              <div className="form-row">
-                <div className="form-group">
-                  <label className="form-label">Expiry</label>
-                  <input className="form-input" required placeholder="MM/YY" value={payment.expiry}
-                    onChange={(e) => setPayment({ ...payment, expiry: e.target.value })} />
+              <h3>Payment Method</h3>
+
+              <div className="payment-method-selector">
+                <div
+                  className={`payment-option ${paymentMethod === 'Card' ? 'active' : ''}`}
+                  onClick={() => setPaymentMethod('Card')}
+                >
+                  <div className="payment-option-radio">
+                    {paymentMethod === 'Card' && <div className="radio-dot" />}
+                  </div>
+                  <span className="payment-option-icon">💳</span>
+                  <div>
+                    <strong>Pay by Card</strong>
+                    <p>Credit or debit card</p>
+                  </div>
                 </div>
-                <div className="form-group">
-                  <label className="form-label">CVV</label>
-                  <input className="form-input" required placeholder="123" maxLength={3} value={payment.cvv}
-                    onChange={(e) => setPayment({ ...payment, cvv: e.target.value })} />
+
+                <div
+                  className={`payment-option ${paymentMethod === 'COD' ? 'active' : ''}`}
+                  onClick={() => setPaymentMethod('COD')}
+                >
+                  <div className="payment-option-radio">
+                    {paymentMethod === 'COD' && <div className="radio-dot" />}
+                  </div>
+                  <span className="payment-option-icon">💵</span>
+                  <div>
+                    <strong>Cash on Delivery</strong>
+                    <p>Pay when your order arrives</p>
+                  </div>
                 </div>
               </div>
+
+              {/* Card fields — only shown if Card is selected */}
+              {paymentMethod === 'Card' && (
+                <>
+                  <p className="payment-note">🔒 This is a demo checkout — no real payment will be processed.</p>
+                  <div className="form-group">
+                    <label className="form-label">Cardholder Name</label>
+                    <input className="form-input" required value={payment.cardName}
+                      onChange={(e) => setPayment({ ...payment, cardName: e.target.value })} />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Card Number</label>
+                    <input className="form-input" required placeholder="4242 4242 4242 4242" maxLength={19} value={payment.cardNumber}
+                      onChange={(e) => setPayment({ ...payment, cardNumber: e.target.value })} />
+                  </div>
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label className="form-label">Expiry</label>
+                      <input className="form-input" required placeholder="MM/YY" value={payment.expiry}
+                        onChange={(e) => setPayment({ ...payment, expiry: e.target.value })} />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">CVV</label>
+                      <input className="form-input" required placeholder="123" maxLength={3} value={payment.cvv}
+                        onChange={(e) => setPayment({ ...payment, cvv: e.target.value })} />
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {/* COD notice */}
+              {paymentMethod === 'COD' && (
+                <div className="cod-notice">
+                  <span>🏠</span>
+                  <div>
+                    <strong>Cash on Delivery selected</strong>
+                    <p>Please have the exact amount ready when your order arrives. Our delivery agent will collect payment at your door.</p>
+                  </div>
+                </div>
+              )}
+
               <div className="form-actions">
                 <button type="button" className="btn btn-ghost" onClick={() => setStep(1)}>← Back</button>
                 <button className="btn btn-primary btn-lg">Review Order →</button>
               </div>
             </form>
-          )}
-
-          {step === 3 && (
-            <form onSubmit={handlePlaceOrder} className="checkout-form">
-              <h3>Review Your Order</h3>
-              <div className="review-block">
-                <h4>Shipping to</h4>
-                <p>{shipping.fullName}<br />{shipping.street}, {shipping.city}, {shipping.state} {shipping.zip}<br />{shipping.country}</p>
-              </div>
-              <div className="review-block">
-                <h4>Payment</h4>
-                <p>Card ending in {payment.cardNumber.slice(-4)}</p>
-              </div>
-              <div className="review-block">
-                <h4>Items ({cart.length})</h4>
-                {cart.map(item => (
-                  <div key={item._id} className="review-item-row">
-                    <span>{item.name} × {item.quantity}</span>
-                    <span>${(item.price * item.quantity).toFixed(2)}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="form-actions">
-                <button type="button" className="btn btn-ghost" onClick={() => setStep(2)}>← Back</button>
-                <button className="btn btn-primary btn-lg" disabled={loading}>
-                  {loading ? 'Placing Order...' : `Place Order — $${total.toFixed(2)}`}
-                </button>
-              </div>
-            </form>
-          )}
-        </div>
-
-        <div className="checkout-summary">
-          <h3>Order Summary</h3>
-          {cart.map(item => (
-            <div key={item._id} className="summary-item">
-              <img src={item.images?.[0]} alt={item.name} />
-              <div>
-                <span className="summary-item-name">{item.name}</span>
-                <span className="summary-item-qty">Qty: {item.quantity}</span>
-              </div>
-              <span>${(item.price * item.quantity).toFixed(2)}</span>
-            </div>
-          ))}
-          <div className="summary-row"><span>Subtotal</span><span>${cartTotal.toFixed(2)}</span></div>
-          <div className="summary-row"><span>Shipping</span><span>{shippingCost === 0 ? 'Free' : `$${shippingCost.toFixed(2)}`}</span></div>
-          <div className="summary-row"><span>Tax</span><span>${tax.toFixed(2)}</span></div>
-          <div className="summary-row total"><span>Total</span><span>${total.toFixed(2)}</span></div>
-        </div>
-      </div>
-    </div>
-  );
-}
